@@ -708,6 +708,26 @@ mailingForm = """<?xml version="1.0" encoding="UTF-8"?>
     <string>i</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="delB">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>400</y>
+     <width>121</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Удалить
+учетную
+запись</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
@@ -1050,6 +1070,14 @@ class MailingDialog(QDialog):
         self.crtBtn.clicked.connect(self.createM)
         self.d = RegDialog()
         self.openTxt.clicked.connect(self.opnTxt)
+        self.delB.clicked.connect(self.delReg)
+
+    def delReg(self):
+        if os.path.exists("date.txt"):
+            os.remove("date.txt")
+            QMessageBox.information(self, " ", "Учетная запись сброшена!")
+        else:
+            QMessageBox.critical(self, " ", "Вы не зарегестрировались!")
 
     def createDialog(self):
         self.show()

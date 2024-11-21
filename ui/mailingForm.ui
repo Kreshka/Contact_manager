@@ -257,6 +257,26 @@
     <string>i</string>
    </property>
   </widget>
+  <widget class="QPushButton" name="delB">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>400</y>
+     <width>121</width>
+     <height>91</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+   <property name="text">
+    <string>Удалить
+учетную
+запись</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>
