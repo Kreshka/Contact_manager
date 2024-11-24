@@ -1204,18 +1204,22 @@ class DeleteDialog(QDialog):
 
         con = sqlite3.connect("dbUsers.sqlite")
         cur = con.cursor()
-        cur.execute(com)
-        lst = cur.fetchall()
-        con.close()
-        if len(lst):
-            self.table2.setRowCount(len(lst))
-            self.table2.setColumnCount(len(lst[0]) - 1)
-            self.table2.setHorizontalHeaderLabels(
-                ("name", "surname", "patronymic", "mail", "phone_number", "date_of_birth", "gender"))
-            for i, j in enumerate(lst):
-                for i2, k in enumerate(j[1:]):
-                    self.table2.setItem(i, i2, QTableWidgetItem(k))
-            self.table2.resizeColumnsToContents()
+        try:
+            cur.execute(com)
+        except:
+            pass
+        else:
+            lst = cur.fetchall()
+            con.close()
+            if len(lst):
+                self.table2.setRowCount(len(lst))
+                self.table2.setColumnCount(len(lst[0]) - 1)
+                self.table2.setHorizontalHeaderLabels(
+                    ("name", "surname", "patronymic", "mail", "phone_number", "date_of_birth", "gender"))
+                for i, j in enumerate(lst):
+                    for i2, k in enumerate(j[1:]):
+                        self.table2.setItem(i, i2, QTableWidgetItem(k))
+                self.table2.resizeColumnsToContents()
 
     def delete(self):
         f = 0
@@ -1360,12 +1364,35 @@ def except_hook(cls, exception, traceback):
     sys.__excepthook__(cls, exception, traceback)
 
 
+def table_exists(conn, table_name):
+    cursor = conn.cursor()
+    cursor.execute('''SELECT count(name) FROM sqlite_master WHERE type='table' AND name=?''', (table_name,))
+    return cursor.fetchone()[0] == 1
+
+
 if __name__ == '__main__':
     if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
         QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)
 
     if hasattr(QtCore.Qt, 'AA_UseHighDpiPixmaps'):
         QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_UseHighDpiPixmaps, True)
+    con = sqlite3.connect("dbUsers.sqlite")
+    if not table_exists(con, "users"):
+        com = """CREATE TABLE users(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT, 
+            surname TEXT, 
+            patronymic TEXT, 
+            mail TEXT, 
+            phone_number TEXT, 
+            date_of_birth date, 
+            gender char
+        );"""
+        cur = con.cursor()
+        cur.execute(com)
+        con.commit()
+        cur.close()
+    con.close()
     app = QApplication(sys.argv)
     ex = MyWidget()
     ex.show()
